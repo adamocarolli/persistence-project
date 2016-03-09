@@ -2,71 +2,84 @@ package edu.toronto.csc301.impl;
 
 import java.awt.image.RenderedImage;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import edu.toronto.csc301.IPost;
-import edu.toronto.csc301.IUser;
+import edu.toronto.csc301.IUser;;
 
 public class User implements IUser {
+	
+	private String username;
+	private String password;
+	private LocalDateTime registrationTime;
+	private HashSet<IPost> posts;
+	private HashSet<IPost> likes;
+
+	public User(String username, String password) {
+		this.username = username;
+		this.password = password;
+		this.registrationTime = LocalDateTime.now();
+		this.posts = new HashSet<IPost>();
+		this.likes = new HashSet<IPost>();
+	}
 
 	@Override
 	public String getUsername() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.username;
 	}
 
 	@Override
 	public String getPassword() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.password;
 	}
 
 	@Override
 	public void setPassword(String password) {
-		// TODO Auto-generated method stub
-
+		this.password = password;
 	}
 
 	@Override
 	public LocalDateTime getRegistrationTime() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.registrationTime;
 	}
 
 	@Override
 	public void setRegistrationTime(LocalDateTime registrationTime) {
-		// TODO Auto-generated method stub
-
+		this.registrationTime = registrationTime;
 	}
 
 	@Override
 	public IPost newPost(RenderedImage image, String caption) {
-		// TODO Auto-generated method stub
-		return null;
+		if (image == null && caption == null) throw new IllegalArgumentException();
+		IPost post = new Post(image, caption);
+		post.setPostedBy(this);
+		posts.add(post);
+		return post;
 	}
 
 	@Override
 	public Iterator<IPost> getPosts() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.posts.iterator();
 	}
 
 	@Override
 	public void like(IPost post) {
-		// TODO Auto-generated method stub
-
+		if (this.likes.contains(post)) return;
+		this.likes.add(post);
+		post.addLike(this);
 	}
 
 	@Override
 	public void unlike(IPost post) {
-		// TODO Auto-generated method stub
-
+		if (!this.likes.contains(post)) return;
+		this.likes.remove(post);
+		post.removeLike(this);
 	}
 
 	@Override
 	public Iterator<IPost> getLikes() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.likes.iterator();
 	}
 
 }
