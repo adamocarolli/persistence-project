@@ -10,13 +10,14 @@ public class Serializer implements ISerializer {
 
 	@Override
 	public void serialize(IUser user, OutputStream output) throws Exception {
-		// TODO Auto-generated method stub
+		if (output == null) throw new NullPointerException();
+		if (user == null) throw new NullPointerException();
 
 	}
 
 	@Override
 	public IUser deserializeUser(InputStream input) throws Exception {
-		// TODO Auto-generated method stub
+		if (input == null) throw new NullPointerException();
 		return null;
 	}
 
