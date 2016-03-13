@@ -3,14 +3,12 @@ package edu.toronto.csc301.impl;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Scanner;
 import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -66,7 +64,6 @@ public class Serializer implements ISerializer {
 	@Override
 	public IUser deserializeUser(InputStream input) throws Exception {
 		if (input == null) throw new NullPointerException();
-		//System.out.println(new Scanner(input).useDelimiter("\\A").next());
 		
 		GraphRepresentation graph = this.mapper.readValue(input, GraphRepresentation.class);
 		Iterator<Map.Entry<String, UserRepresentation>> userIt = graph.UserMap.entrySet().iterator();
@@ -87,15 +84,7 @@ public class Serializer implements ISerializer {
 			postKey.setPostedAt(postRepr.getPostedAt());
 			this.deRepresentPost(postKey, postRepr);
 		}
-		
-		/*
-		Collection<Post> pColl = MyPostMap.values();
-		Iterator<Post> pit = pColl.iterator();
-		while (pit.hasNext()) {
-			System.out.println(pit.next().getPostedBy().getUsername());
-		}*/
-		
-		
+				
 		return MyUserMap.get(graph.origin);
 	}
 	
@@ -169,8 +158,8 @@ public class Serializer implements ISerializer {
 		}
 		
 		// Map `post`
-		PostMap.put(postKey, postRepr);
 		GraphPostSet.add(postRepr);
+		PostMap.put(postKey, postRepr);
 	}
 	
 	static class PostKey {
@@ -192,6 +181,30 @@ public class Serializer implements ISerializer {
 		public void setPostedAt(LocalDateTime postedAt) {
 			this.postedAt = postedAt;
 		}
+		
+	    @Override
+	    public int hashCode() {
+	        final int prime = 31;
+	        int result = 1;
+	        result = prime * result + postedBy.hashCode()*prime + postedAt.hashCode();  
+	        return result;
+	    }
+		
+		@Override
+	    public boolean equals(Object obj) {
+	        if (this == obj)
+	            return true;
+	        if (obj == null)
+	            return false;
+	        if (this.getClass() != obj.getClass())
+	            return false;
+	        PostKey other = (PostKey) obj;
+	        if (this.postedBy != other.postedBy)
+	            return false;
+	        if (this.postedAt != other.postedAt)
+	            return false;
+	        return true;
+	    }
 	}
 	
 	static class UserRepresentation {
